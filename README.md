@@ -2,7 +2,8 @@
 
 Интернет-магазин картин эпохи Возрождения на **Vue 2 (Options API) + TypeScript + Vuex + Vue Router + Webpack**.
 
-Макет: [Figma — Banki.shop](https://www.figma.com/file/6LxPDEsauEGanhR2nDW68X/Banki.shop?node-id=0%3A1)
+- Макет: [Figma — Banki.shop](https://www.figma.com/file/6LxPDEsauEGanhR2nDW68X/Banki.shop?node-id=0%3A1)
+- **Демо:** https://addeo.github.io/banki-test/
 
 ## Стек
 
@@ -32,7 +33,7 @@
 3. **Persist** — состав корзины в `localStorage`
 4. **Модалка** — описание, цена, слайдер 2–4 фото
 
-Дополнительно для UX: бейдж корзины в шапке, toast при добавлении, empty states, активные пункты меню, sticky header.
+Дополнительно: бейдж корзины, toast, empty states, адаптив до 360px.
 
 ## Архитектура
 
@@ -48,8 +49,6 @@ src/
   utils/         # localStorage
 ```
 
-Состояние корзины и поиск живут в Vuex, а не в корневом `App.vue`. Страницы получают данные через `mapState` / `mapGetters` / `mapActions`.
-
 ## Установка и запуск
 
 ```bash
@@ -64,4 +63,10 @@ npm run dev      # http://localhost:8080
 npm run build
 ```
 
-Готовый билд — в `dist/`. Для history-режима роутера на хостинге нужен fallback на `index.html`.
+Готовый билд — в `dist/`.
+
+Для GitHub Pages:
+
+```bash
+PUBLIC_PATH=/banki-test/ npm run build
+```

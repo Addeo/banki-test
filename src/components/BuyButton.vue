@@ -63,16 +63,16 @@ export default Vue.extend({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-width: 160px;
-  height: 48px;
-  padding: 0 28px;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 45px;
+  padding: 13px 28px;
   background: $primary;
   color: $font-light;
   font-size: 14px;
   font-weight: 700;
   line-height: 21px;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
+  transition: background-color 0.2s ease;
 
   &:hover:not(:disabled) {
     background: $primary-hover;
@@ -84,17 +84,17 @@ export default Vue.extend({
 
   &--processing {
     background: $primary-hover;
-    min-width: 210px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
 
   &--in-cart {
     background: $primary;
-    cursor: default;
   }
 
   &__spinner {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border: 2px solid rgba($font-light, 0.35);
     border-top-color: $font-light;
     border-radius: 50%;
@@ -111,6 +111,12 @@ export default Vue.extend({
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 360px) {
+  .buy {
+    padding: 12px 16px;
   }
 }
 </style>

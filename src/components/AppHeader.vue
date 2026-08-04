@@ -1,32 +1,38 @@
 <template>
   <header class="header">
     <div class="container header__inner">
-      <div class="header__left">
-        <router-link class="header__brand" to="/" aria-label="Banki.shop — на главную">
-          Banki.shop
-        </router-link>
+      <nav class="header__nav" aria-label="Основная навигация">
+        <button
+          class="header__burger"
+          type="button"
+          :class="{ 'header__burger--open': menuOpen }"
+          :aria-expanded="menuOpen ? 'true' : 'false'"
+          aria-label="Меню"
+          @click="menuOpen = !menuOpen"
+        >
+          <span />
+        </button>
 
-        <nav class="header__nav" aria-label="Основная навигация">
-          <ul class="header__menu">
-            <li v-for="link in links" :key="link.to">
-              <router-link
-                class="header__link"
-                :to="link.to"
-                exact-active-class="header__link--active"
-              >
-                {{ link.label }}
-              </router-link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+        <ul class="header__menu" :class="{ 'header__menu--open': menuOpen }">
+          <li v-for="link in links" :key="link.to">
+            <router-link
+              class="header__link"
+              :to="link.to"
+              exact-active-class="header__link--active"
+              @click.native="menuOpen = false"
+            >
+              {{ link.label }}
+            </router-link>
+          </li>
+        </ul>
+      </nav>
 
-      <div class="header__right">
+      <div class="header__actions">
         <form
           v-if="showSearch"
           class="search"
           role="search"
-          @submit.prevent
+          @submit.prevent="focusResults"
         >
           <input
             class="search__input"
@@ -36,9 +42,7 @@
             aria-label="Поиск по названию картины"
             @input="onSearchInput"
           />
-          <button class="search__button" type="button" @click="focusResults">
-            Найти
-          </button>
+          <button class="search__button" type="submit">Найти</button>
         </form>
 
         <router-link
@@ -46,20 +50,17 @@
           to="/cart"
           :aria-label="`Корзина, товаров: ${cartCount}`"
         >
-          <span class="cart-link__icon" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M7 7h14l-1.5 9h-11L7 7zm0 0L6 3H3"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <circle cx="10" cy="20" r="1.4" fill="currentColor" />
-              <circle cx="17" cy="20" r="1.4" fill="currentColor" />
-            </svg>
-          </span>
-          <span class="cart-link__label">Корзина</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M7 7h14l-1.5 9h-11L7 7zm0 0L6 3H3"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="10" cy="20" r="1.4" fill="currentColor" />
+            <circle cx="17" cy="20" r="1.4" fill="currentColor" />
+          </svg>
           <span v-if="cartCount" class="cart-link__badge">{{ cartCount }}</span>
         </router-link>
       </div>
@@ -77,6 +78,7 @@ export default Vue.extend({
   data() {
     return {
       links: NAV_LINKS,
+      menuOpen: false,
     };
   },
   computed: {
@@ -84,6 +86,11 @@ export default Vue.extend({
     ...mapGetters(['cartCount']),
     showSearch(): boolean {
       return this.$route.name === 'catalog';
+    },
+  },
+  watch: {
+    '$route.path'() {
+      this.menuOpen = false;
     },
   },
   methods: {
@@ -105,39 +112,77 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .header {
   background: $bg;
-  border-bottom: 1px solid rgba($primary, 0.08);
-  padding: 22px 0;
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  height: $header-height;
+  border-bottom: 1px solid $border;
 
   &__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    height: 100%;
+    gap: 20px;
   }
 
-  &__left {
+  &__nav {
     display: flex;
     align-items: center;
-    gap: 28px;
     min-width: 0;
+    flex: 1 1 auto;
   }
 
-  &__brand {
-    flex-shrink: 0;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 24px;
-    color: $primary;
-    letter-spacing: 0.02em;
+  &__burger {
+    display: none;
+    width: 30px;
+    height: 30px;
+    position: relative;
+
+    span,
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 30px;
+      height: 3px;
+      background: $primary;
+      transition: transform 0.2s ease, top 0.2s ease;
+    }
+
+    span {
+      top: 13px;
+    }
+
+    &::before {
+      top: 5px;
+    }
+
+    &::after {
+      top: 21px;
+    }
+
+    &--open {
+      span {
+        opacity: 0;
+      }
+
+      &::before {
+        top: 13px;
+        transform: rotate(45deg);
+      }
+
+      &::after {
+        top: 13px;
+        transform: rotate(-45deg);
+      }
+    }
   }
 
   &__menu {
     display: flex;
-    flex-wrap: wrap;
-    gap: 16px 24px;
+    align-items: center;
+    justify-content: space-between;
+    width: min(560px, 100%);
+    gap: 12px;
   }
 
   &__link {
@@ -145,29 +190,16 @@ export default Vue.extend({
     font-weight: 700;
     line-height: 21px;
     color: $font-dark;
+    white-space: nowrap;
     transition: color 0.2s ease;
-    position: relative;
 
-    &:hover {
-      color: $primary-hover;
-    }
-
+    &:hover,
     &--active {
-      color: $primary;
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -6px;
-        height: 2px;
-        background: $primary;
-      }
+      color: $primary-hover;
     }
   }
 
-  &__right {
+  &__actions {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -178,22 +210,20 @@ export default Vue.extend({
 .search {
   display: flex;
   align-items: stretch;
-  width: min(360px, 42vw);
 
   &__input {
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 48px;
-    padding: 0 16px;
+    width: 280px;
+    max-width: 42vw;
+    height: 45px;
+    padding: 0 13px;
     border: 1px solid $border;
     border-right: none;
-    background: #fff;
+    background: transparent;
     color: $font-dark;
     font-size: 14px;
     font-weight: 300;
     line-height: 21px;
     outline: none;
-    transition: border-color 0.2s ease;
 
     &::placeholder {
       color: $text-muted;
@@ -205,9 +235,8 @@ export default Vue.extend({
   }
 
   &__button {
-    flex: 0 0 auto;
-    height: 48px;
-    padding: 0 24px;
+    height: 45px;
+    padding: 0 36px;
     background: $primary;
     color: $font-light;
     font-size: 14px;
@@ -225,93 +254,104 @@ export default Vue.extend({
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 48px;
-  padding: 0 14px;
-  border: 1px solid rgba($primary, 0.18);
-  background: #fff;
-  color: $font-dark;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: $primary;
+  transition: color 0.2s ease;
 
-  &:hover {
-    border-color: $primary-hover;
-    color: $primary;
-  }
-
+  &:hover,
   &.router-link-active {
-    border-color: $primary;
-    color: $primary;
-  }
-
-  &__icon {
-    display: flex;
-  }
-
-  &__label {
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 21px;
+    color: $primary-hover;
   }
 
   &__badge {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 5px;
+    top: 0;
+    right: 0;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
     border-radius: 999px;
     background: $secondary;
     color: $font-light;
     font-size: 11px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 18px;
     text-align: center;
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 980px) {
   .header {
-    &__inner {
-      flex-wrap: wrap;
-    }
-
-    &__right {
-      width: 100%;
-      justify-content: space-between;
-    }
-  }
-
-  .search {
-    width: 100%;
-    max-width: none;
-    flex: 1 1 auto;
-  }
-}
-
-@media (max-width: 720px) {
-  .header {
-    padding: 14px 0;
-
-    &__left {
-      width: 100%;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 14px;
+    &__burger {
+      display: block;
+      margin-right: 12px;
     }
 
     &__menu {
-      gap: 10px 14px;
-    }
+      display: none;
+      position: absolute;
+      top: $header-height;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      padding: 8px 20px 16px;
+      background: $bg;
+      border-bottom: 1px solid $border;
 
-    &__link--active::after {
-      bottom: -4px;
+      &--open {
+        display: flex;
+      }
+
+      li {
+        width: 100%;
+        padding: 10px 0;
+      }
     }
   }
+}
 
-  .cart-link {
-    &__label {
-      display: none;
+@media (max-width: 680px) {
+  .search {
+    &__input {
+      width: 140px;
+      max-width: 36vw;
+    }
+
+    &__button {
+      padding: 0 16px;
+    }
+  }
+}
+
+@media (max-width: 420px) {
+  .header {
+    height: auto;
+    min-height: $header-height;
+    padding: 12px 0;
+  }
+
+  .header__inner {
+    flex-wrap: wrap;
+  }
+
+  .header__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search {
+    flex: 1 1 auto;
+
+    &__input {
+      width: auto;
+      max-width: none;
+      flex: 1 1 auto;
     }
   }
 }

@@ -1,12 +1,7 @@
 <template>
-  <section class="page">
+  <section class="catalog-page">
     <div class="container">
-      <div class="page__head">
-        <h1 class="page__title">Картины эпохи Возрождения</h1>
-        <p class="page__subtitle">
-          Оригиналы и репродукции великих мастеров — с доставкой по России
-        </p>
-      </div>
+      <h1 class="catalog-page__title">Картины эпохи Возрождения</h1>
 
       <div v-if="filteredProducts.length" id="catalog" class="catalog">
         <product-card
@@ -56,55 +51,45 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.page {
-  padding: 40px 0 64px;
-
-  &__head {
-    margin-bottom: 36px;
-  }
+.catalog-page {
+  padding: 0 0 60px;
 
   &__title {
-    margin-bottom: 8px;
-  }
-
-  &__subtitle {
-    max-width: 520px;
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 21px;
-    color: $text-muted;
+    margin: 40px 0;
   }
 }
 
 .catalog {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: $gap;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px $gap;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .catalog {
-    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    gap: 24px;
   }
 }
 
-@media (max-width: 600px) {
-  .page {
-    padding: 24px 0 40px;
-
-    &__head {
-      margin-bottom: 24px;
+@media (max-width: 666px) {
+  .catalog-page {
+    &__title {
+      margin: 30px 0 20px;
+      text-align: center;
+      font-size: 22px;
+      line-height: 32px;
     }
+  }
+}
 
+@media (max-width: 360px) {
+  .catalog-page {
     &__title {
       font-size: 20px;
       line-height: 30px;
     }
-  }
-
-  .catalog {
-    grid-template-columns: 1fr;
-    gap: 24px;
   }
 }
 </style>

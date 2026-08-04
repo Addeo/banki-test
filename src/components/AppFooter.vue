@@ -16,10 +16,15 @@
           <img class="footer__icon" :src="telIcon" width="18" height="18" alt="" />
           <span>+7 (812) 555-55-55</span>
         </a>
-        <p class="footer__contact">
+        <a
+          class="footer__contact"
+          href="https://yandex.ru/maps/-/CDu~QK~c"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <img class="footer__icon" :src="addressIcon" width="18" height="18" alt="" />
           <span>г. Санкт-Петербург, ул. Ефимова, 3</span>
-        </p>
+        </a>
       </div>
     </div>
   </footer>
@@ -46,20 +51,26 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .footer {
   background: $footer-bg;
-  padding: 36px 0;
   margin-top: auto;
 
   &__inner {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 24px;
+    min-height: 95px;
+  }
+
+  &__nav {
+    flex: 1 1 auto;
+    max-width: 560px;
   }
 
   &__menu {
     display: flex;
-    flex-wrap: wrap;
-    gap: 16px 30px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   &__link {
@@ -67,6 +78,7 @@ export default Vue.extend({
     font-weight: 700;
     line-height: 21px;
     color: $font-dark;
+    white-space: nowrap;
     transition: color 0.2s ease;
 
     &:hover,
@@ -77,9 +89,9 @@ export default Vue.extend({
 
   &__contacts {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-end;
+    align-items: center;
+    gap: 28px;
+    flex-shrink: 0;
   }
 
   &__contact {
@@ -90,6 +102,11 @@ export default Vue.extend({
     font-weight: 300;
     line-height: 21px;
     color: $font-dark;
+    text-decoration: none;
+
+    &:hover {
+      color: $primary-hover;
+    }
   }
 
   &__icon {
@@ -100,20 +117,38 @@ export default Vue.extend({
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1020px) {
   .footer {
     &__inner {
       flex-direction: column;
       align-items: center;
+      padding-top: 24px;
+      padding-bottom: 24px;
       text-align: center;
+    }
+
+    &__nav {
+      max-width: none;
+      width: 100%;
     }
 
     &__menu {
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     &__contacts {
-      align-items: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+}
+
+@media (max-width: 530px) {
+  .footer {
+    &__menu {
+      flex-direction: column;
+      gap: 10px;
     }
   }
 }

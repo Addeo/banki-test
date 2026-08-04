@@ -1,9 +1,11 @@
 const path = require('path');
+const webpack = require('webpack');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isProd = argv.mode === 'production';
+  const publicPath = process.env.PUBLIC_PATH || '/';
 
   return {
     entry: './src/main.ts',
@@ -12,7 +14,7 @@ module.exports = (env, argv) => {
       filename: isProd ? 'js/[name].[contenthash:8].js' : 'js/[name].js',
       assetModuleFilename: 'assets/[name].[hash:8][ext]',
       clean: true,
-      publicPath: '/',
+      publicPath,
     },
     resolve: {
       extensions: ['.ts', '.js', '.vue', '.json'],
@@ -74,6 +76,9 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'public/index.html'),
         title: 'Banki.shop — Картины эпохи Возрождения',
+      }),
+      new webpack.DefinePlugin({
+        'process.env.BASE_URL': JSON.stringify(publicPath),
       }),
     ],
     devServer: {
