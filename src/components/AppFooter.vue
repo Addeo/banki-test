@@ -1,10 +1,12 @@
 <template>
-  <footer class="footer" id="contacts">
+  <footer class="footer">
     <div class="container footer__inner">
       <nav class="footer__nav" aria-label="Навигация в подвале">
         <ul class="footer__menu">
-          <li v-for="link in links" :key="link.href">
-            <a class="footer__link" :href="link.href">{{ link.label }}</a>
+          <li v-for="link in links" :key="link.to">
+            <router-link class="footer__link" :to="link.to">
+              {{ link.label }}
+            </router-link>
           </li>
         </ul>
       </nav>
@@ -45,6 +47,7 @@ export default Vue.extend({
 .footer {
   background: $footer-bg;
   padding: 36px 0;
+  margin-top: auto;
 
   &__inner {
     display: flex;
@@ -66,7 +69,8 @@ export default Vue.extend({
     color: $font-dark;
     transition: color 0.2s ease;
 
-    &:hover {
+    &:hover,
+    &.router-link-exact-active {
       color: $primary-hover;
     }
   }

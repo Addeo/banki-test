@@ -6,7 +6,7 @@ export function loadCartIds(): number[] {
     if (!raw) {
       return [];
     }
-    const parsed = JSON.parse(raw);
+    const parsed = JSON.parse(raw) as unknown;
     if (!Array.isArray(parsed)) {
       return [];
     }

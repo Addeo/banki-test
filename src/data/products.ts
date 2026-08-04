@@ -14,26 +14,15 @@ import p3d3 from '@/assets/images/p_3_d_3.jpg';
 import p4d1 from '@/assets/images/p_4_d_1.jpg';
 import p4d2 from '@/assets/images/p_4_d_2.jpg';
 import p4d3 from '@/assets/images/p_4_d_3.jpg';
+import type { NavLink, Product } from '@/types';
 
-export interface Product {
-  id: number;
-  title: string;
-  author: string;
-  description: string;
-  image: string;
-  gallery: string[];
-  oldPrice: number | null;
-  price: number | null;
-  isSold: boolean;
-}
-
-export const NAV_LINKS = [
-  { label: 'Каталог', href: '#catalog' },
-  { label: 'Доставка', href: '#delivery' },
-  { label: 'Оплата', href: '#payment' },
-  { label: 'Контакты', href: '#contacts' },
-  { label: 'О компании', href: '#about' },
-] as const;
+export const NAV_LINKS: NavLink[] = [
+  { label: 'Каталог', to: '/' },
+  { label: 'Доставка', to: '/delivery' },
+  { label: 'Оплата', to: '/payment' },
+  { label: 'Контакты', to: '/contacts' },
+  { label: 'О компании', to: '/about' },
+];
 
 export const PRODUCTS: Product[] = [
   {
@@ -86,6 +75,6 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
-export function formatPrice(value: number): string {
-  return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} $`;
+export function findProductById(id: number): Product | undefined {
+  return PRODUCTS.find((product) => product.id === id);
 }

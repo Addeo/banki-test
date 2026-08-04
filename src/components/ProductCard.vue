@@ -4,16 +4,13 @@
       class="card__media"
       type="button"
       :aria-label="`Открыть карточку: ${fullTitle}`"
-      @click="$emit('open', product)"
+      @click="$emit('open', product.id)"
     >
-      <img class="card__image" :src="product.image" :alt="fullTitle" />
+      <img class="card__image" :src="product.image" :alt="fullTitle" width="310" height="198" />
+      <span v-if="product.isSold" class="card__badge">Продана</span>
     </button>
 
-    <button
-      class="card__title"
-      type="button"
-      @click="$emit('open', product)"
-    >
+    <button class="card__title" type="button" @click="$emit('open', product.id)">
       <span class="card__name">{{ product.title }}</span>
       <span class="card__author">{{ product.author }}</span>
     </button>
@@ -38,8 +35,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue';
 import BuyButton from '@/components/BuyButton.vue';
-import { Product, formatPrice } from '@/data/products';
-import type { CartButtonState } from '@/types/cart';
+import type { CartButtonState, Product } from '@/types';
+import { formatPrice, productFullTitle } from '@/types';
 
 export default Vue.extend({
   name: 'ProductCard',
@@ -58,7 +55,7 @@ export default Vue.extend({
   },
   computed: {
     fullTitle(): string {
-      return `${this.product.title} ${this.product.author}`;
+      return productFullTitle(this.product);
     },
   },
   methods: {
@@ -74,7 +71,7 @@ export default Vue.extend({
   min-width: 0;
 
   &--sold {
-    opacity: 0.35;
+    opacity: 0.45;
 
     .card__footer {
       pointer-events: none;
@@ -82,6 +79,7 @@ export default Vue.extend({
   }
 
   &__media {
+    position: relative;
     display: block;
     width: 100%;
     margin-bottom: 20px;
@@ -94,11 +92,23 @@ export default Vue.extend({
     width: 100%;
     height: 198px;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
   }
 
   &__media:hover .card__image {
     transform: scale(1.03);
+  }
+
+  &__badge {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    padding: 6px 10px;
+    background: rgba($primary, 0.88);
+    color: $font-light;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
   }
 
   &__title {
@@ -155,6 +165,7 @@ export default Vue.extend({
     font-weight: 400;
     line-height: 24px;
     color: $font-dark;
+    opacity: 0.7;
   }
 }
 

@@ -4,6 +4,7 @@
     type="button"
     :class="buttonClass"
     :disabled="state !== 'idle'"
+    :aria-busy="state === 'processing'"
     @click="$emit('buy')"
   >
     <span v-if="state === 'processing'" class="buy__spinner" aria-hidden="true" />
@@ -22,7 +23,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue';
 import checkIcon from '@/assets/images/inCart.png';
-import type { CartButtonState } from '@/types/cart';
+import type { CartButtonState } from '@/types';
 
 export default Vue.extend({
   name: 'BuyButton',

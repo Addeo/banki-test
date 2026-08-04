@@ -54,6 +54,18 @@ a {
   text-decoration: none;
 }
 
+.content a,
+.page a[href^='tel'],
+.page a[href^='mailto'] {
+  color: $primary;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: $primary-hover;
+  }
+}
+
 button,
 input {
   font-family: inherit;

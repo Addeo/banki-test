@@ -1,6 +1,12 @@
 <template>
-  <div class="modal" role="dialog" aria-modal="true" :aria-label="fullTitle" @click.self="close">
-    <div class="modal__dialog">
+  <div
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    :aria-label="fullTitle"
+    @click.self="close"
+  >
+    <div class="modal__dialog" ref="dialog">
       <button class="modal__close" type="button" aria-label="Закрыть" @click="close">
         ×
       </button>
@@ -26,7 +32,17 @@
               </span>
               <span class="modal__price">{{ formatPrice(product.price || 0) }}</span>
             </div>
-            <buy-button :state="cartState" @buy="$emit('buy', product.id)" />
+            <div class="modal__actions">
+              <buy-button :state="cartState" @buy="$emit('buy', product.id)" />
+              <router-link
+                v-if="cartState === 'in-cart'"
+                class="modal__cart-link"
+                to="/cart"
+                @click.native="close"
+              >
+                Перейти в корзину
+              </router-link>
+            </div>
           </template>
         </div>
       </div>
@@ -38,8 +54,8 @@
 import Vue, { PropType } from 'vue';
 import BuyButton from '@/components/BuyButton.vue';
 import ImageSlider from '@/components/ImageSlider.vue';
-import { Product, formatPrice } from '@/data/products';
-import type { CartButtonState } from '@/types/cart';
+import type { CartButtonState, Product } from '@/types';
+import { formatPrice, productFullTitle } from '@/types';
 
 export default Vue.extend({
   name: 'ProductModal',
@@ -59,11 +75,15 @@ export default Vue.extend({
   },
   computed: {
     fullTitle(): string {
-      return `${this.product.title} ${this.product.author}`;
+      return productFullTitle(this.product);
     },
   },
   mounted() {
     window.addEventListener('keydown', this.onKeydown);
+    const dialog = this.$refs.dialog as HTMLElement | undefined;
+    if (dialog) {
+      dialog.focus();
+    }
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.onKeydown);
@@ -92,6 +112,7 @@ export default Vue.extend({
   justify-content: center;
   padding: 20px;
   background: rgba($primary, 0.55);
+  animation: fade-in 0.2s ease;
 
   &__dialog {
     position: relative;
@@ -100,6 +121,8 @@ export default Vue.extend({
     overflow: auto;
     background: $bg;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+    outline: none;
+    animation: rise-in 0.25s ease;
   }
 
   &__close {
@@ -176,6 +199,47 @@ export default Vue.extend({
   &__sold {
     font-size: 16px;
     line-height: 24px;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  &__cart-link {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    color: $primary;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: $primary-hover;
+    }
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
